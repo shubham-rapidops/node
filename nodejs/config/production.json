@@ -1,0 +1,6 @@
+{
+    "name":"my product app",
+    "mail":{
+        "host":"product-mail.com"
+    }
+}

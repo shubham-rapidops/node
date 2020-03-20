@@ -1,0 +1,822 @@
+                                nodejs
+
+
+
+var http = require('http');
+
+//create a server object:
+http.createServer(function (req, res) {
+  res.write('Hello World!'); //write a response to the client
+  res.end(); //end the response
+}).listen(8080); //the server object listens on port 8080
+
+// function hello(string){
+//     console.log("hello " + string);
+//     console.log(new Date().getDate());
+
+
+// }
+
+// hello("abcd")
+// // console.log(window);
+
+----------------------------------------------------------------------
+                       module
+
+
+    console.log(__filename);
+    console.log(__dirname);
+
+
+
+    function add(a,b){
+        console.log(parseInt(a)+parseInt(b));
+
+    }
+
+    module.exports=add;
+
+---------------------------------------------------------------------
+                      path module
+
+
+const path = require('path')
+
+console.log(path.parse(__filename));
+
+                ----------OS-------------
+
+const os = require('os')
+console.log(os.totalmem());
+console.log(os.freemem());
+
+--------------------filesystem---------------------
+
+const fs = require('fs');
+
+
+console.log(fs.readdirSync("./"));
+
+fs.readdir("./abc",function(err,file){
+    if(err) console.log(err);
+    else console.log(file);
+
+
+})
+
+--------------- Events------------------------------
+
+
+const Event=require('events');
+
+const emitter = new Event;
+//add listener to event
+
+emitter.on('msg',(e) =>{ console.log(`listner called ${e.url}`)});
+
+//rasie an event
+emitter.emit("msg",{id:10,url:"http://abc"})
+
+
+---------------------Event wrap----------------
+
+file1.js-->
+
+const Event=require('events');
+
+
+class Log extends Event{
+    log(msg){
+        console.log(msg);
+        this.emit("msg",{id:10,url:"http://abc"})
+
+    }
+
+}
+module.exports=Log;
+
+file2.js-->
+
+const Event=require('events');
+const Event=require('events');
+
+
+class Log extends Event{
+    log(msg){
+        console.log(msg);
+        this.emit("msg",{id:10,url:"http://abc"})
+
+    }
+
+}
+
+
+module.exports=Log;
+
+
+const Log = require("./add")
+const log = new Log();
+
+log.on('msg',(e) =>{ console.log(`listner called ${e.url}`)});
+
+log.log("abcd")
+
+------------- HTTP-------------------
+
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+   if(req.url==="/"){
+    res.write("hello user");
+    res.end();
+   }
+   if(req.url==="/api/course"){
+       res.write(JSON.stringify([1,2,3,4,5,6]));
+       res.end();
+   }
+});
+server.listen(3000);
+
+// server.on('connection',(socket) => {
+//     console.log(`new connectio n `);
+
+// })
+
+
+console.log('listening on port 3000');
+--------------------------
+
+const http = require('http');
+const node = require('nodemon');
+
+const request = (req, res) => {
+    if(req.url==="/"){
+     res.write("hello user");
+     
+     res.end();
+    }
+    if(req.url==="/api/course"){
+        res.write(JSON.stringify([1,2,3,4,5,6]));
+        res.end();
+    }
+ }
+
+const server = http.createServer();
+server.on('request',request)
+server.listen(3000);
+
+-----------------------
+const http = require('http');
+const node = require('nodemon');
+const html=`<html>
+<body>
+
+<h1>This is heading 1</h1>
+<h2>This is heading 2</h2>
+<h3>This is heading 3</h3>
+<h4>This is heading 4</h4>
+<h5>This is heading 5</h5>
+<h6>This is heading 6</h6>
+
+</body>
+</html>
+`
+
+const request = (req, res) => {
+    if(req.url==="/"){
+         res.write(html);
+
+     res.end();
+    }
+    if(req.url==="/api/course"){
+        res.write(JSON.stringify([1,2,3,4,5,6]));
+        res.end();
+    }
+ }
+
+const server = http.createServer();
+server.on('request',request)
+server.listen(3000);
+---------------------------------------------
+              event loop
+
+const a = () =>{console.log("A")};
+const b = () =>{console.log("B")};
+const c = () =>{console.log("C")};
+const d = () =>{console.log("D")};
+const e = () =>{console.log("E")};
+
+const f = () =>{
+    console.log("f")
+    setImmediate(a); 
+     setTimeout(a,0);
+    b();
+    c();
+    d();
+    e();
+};
+
+
+f();
+
+-----------------------------------------------
+
+const bar = () => console.log('bar')
+
+const baz = () => console.log('baz')
+const a = () => console.log('A')
+
+
+const foo = () => {
+  console.log('foo')
+
+  setImmediate(a)
+  
+  setTimeout(bar, 0)
+
+
+  new Promise((resolve, reject) =>
+    resolve('should be right after baz, before bar')
+  ).then(resolve => console.log(resolve))
+  baz()
+}
+
+foo()
+
+process.nextTick(() => {
+    console.log("tick");    
+  })
+
+
+//             OUTPUT
+// foo
+// baz
+// tick
+// should be right after baz, before bar
+// bar
+// A
+
+
+==============================================================================
+                         read file 
+
+
+ const fs = require('fs');
+
+// fs.open('/home/shubham/1.txt','r',(err,data)=>{
+//     if(err){
+//         console.log('error');
+//         return  
+//     }
+//     else{
+//      console.log(data);
+      
+//     }
+// }) 
+
+// try {
+//     const fd = fs.openSync('/home/shubham/1.txt', 'r')
+//     console.log(fd);
+    
+//   } catch (err) {
+//     console.error(err)
+//   }
+
+
+// fs.stat('/home/shubham/1.txt',(err,stats)=>{
+//     if(err){
+//         console.log("error");
+//         console.log(err);
+
+//         return
+//     }
+//     // else{
+//     //     console.log(stats);
+        
+//     // }
+//     console.log(stats.isFile());
+//     console.log(stats.isDirectory());
+//     console.log(stats.isSymbolicLink());
+//     console.log(stats.size);
+  
+// })
+
+
+// fs.readFile('/home/shubham/1.txt', (err, data)=>{
+//     if(err){
+//         console.log(err);
+//         return        
+//     } 
+//     console.log(data);
+     
+// })
+
+// try{
+//     const data = fs.readFileSync('/home/shubham/1.txt','utf8')
+//     console.log(data);    
+// }
+// catch(err){
+//     console.log(err);
+    
+// } 
+
+=======================================================================
+
+                write to a file
+
+const fs = require('fs');
+
+let data = 'some content fgdgfdgfd ';
+
+// fs.writeFile('/home/shubham/1.txt',data,(err)=>{
+//     if(err){
+//         console.log(err);
+//     return; 
+//     }  
+//     console.log('written sucess');
+    
+// })
+
+// try{
+//     let stats = fs.writeFileSync('/home/shubham/1.txt',data)
+//     console.log(stats);
+    
+// }catch(e){}
+
+//--------------------------------------------------------------------
+
+//                     to append data
+
+
+// fs.writeFile('/home/shubham/1.txt',data,{flag:'a+'},(err)=>{
+//     if(err){
+//                 console.log(err);
+//             return; 
+//             }  
+//             console.log('written sucess');
+
+// })
+
+
+fs.appendFile('/home/shubham/1.txt',data,err=>
+{
+    if(err){
+        console.log(err);
+        return;
+        
+    }
+})
+
+-======================================================================
+
+                 check id dir exist and create dir
+
+
+const fs = require('fs');
+
+
+const folderName = '/home/shubham/Desktop/node/abc';
+
+try{
+    if(!fs.existsSync(folderName)){
+        fs.mkdirSync(folderName)
+        console.log('dir created');
+        
+    }
+    else{
+        console.log("folder Ffound");
+            }
+}
+catch(e){
+    console.log(e);
+    
+}
+
+
+======================================================================
+
+                    Read the content of a directory
+
+const fs = require('fs');
+
+const path = require('path');
+ 
+const folderName = '/home/shubham/Desktop/node';
+
+// get content name 
+console.log(fs.readdirSync(folderName));
+
+///get full dir path
+
+console.log(fs.readdirSync(folderName).map(fileName=>{
+    return path.join(folderName , fileName)
+}));
+
+/// get the files, and exclude the folders
+
+const isFile = fileName => {
+    return fs.lstatSync(fileName).isFile();
+}
+
+console.log(fs.readdirSync(folderName).map(fileName=>{
+    return path.join(folderName, fileName)
+}).filter(isFile));
+
+
+======================================================================
+
+                  Rename a folder
+
+const fs = require('fs');
+
+// fs.rename('/home/shubham/Desktop/node/abc','/home/shubham/Desktop/node/change',(err)=>{
+//     if(err){
+//         console.log(err);
+//     }
+//     console.log("rename sucess");
+    
+// });
+
+//fs.renameSync() is the synchronous version
+
+try{
+    fs.renameSync('/home/shubham/Desktop/node/change','/home/shubham/Desktop/node/abc');
+    console.log('sucess');
+    
+}
+catch(e){
+
+}
+
+==========================================================================
+
+                   Remove a folder
+
+
+// const fs = require('fs');
+
+// fs.rmdirSync('/home/shubham/Desktop/node/abc')
+
+// ---------------------Removing a folder that has content 
+
+ const fs = require('fs-extra');
+
+// fs.remove('/home/shubham/Desktop/node/abc',err=>{
+//     if (err){
+//         console.error(err);
+//     }
+    
+// })
+
+// ----------------It can also be used with promises:
+
+// fs.remove('/home/shubham/Desktop/node/abc')
+// .then(()=>{
+//     console.log('removed');
+    
+// })
+// .catch(err=>{
+//     console.error(err);
+    
+// })
+
+
+// -------------------------with async/await:
+
+async function removeFolder(folder){
+    try{
+        await fs.remove(folder);
+        console.log('removed');
+        
+    }
+    catch(err){
+        console.log(err);
+        
+    }
+}
+
+removeFolder('/home/shubham/Desktop/node/abc')
+
+
+========================================================================
+
+
+                       path
+
+const path = require('path');
+
+console.log(path.basename('/home/shubham/Desktop/node/sfam.js'));
+console.log(path.dirname('/home/shubham/Desktop/node/sfam.js'));
+console.log(path.extname('/home/shubham/Desktop/node/sfam.txt'));
+
+
+console.log(path.isAbsolute('/home/shubham/Desktop/node/sfam.txt'));
+console.log(path.isAbsolute('./home/shubham/Desktop/node/sfam.txt'));
+
+
+console.log(path.join('/','user','dsad'));
+
+console.log(path.normalize('/user//abc/..//abd.txt'));
+
+console.log(path.parse('./home/shubham/Desktop/node/sfam.txt'));
+
+console.log(path.resolve('sam.js'));
+
+=========================================================================
+
+                           OS module
+
+const os = require('os');
+
+
+//Return the string that identifies the underlying architecture
+console.log(os.arch());
+
+//Return information on the CPUs available on your system.
+console.log(os.cpus());
+
+//Return BE or LE depending if Node.js was compiled with Big Endian or Little Endian.
+console.log(os.endianness());
+
+//Return the number of bytes that represent the free memory in the system.
+console.log(os.freemem());
+
+//Return the path to the home directory of the current user.
+console.log(os.homedir());
+
+//Return the hostname.
+console.log(os.hostname());
+
+//Return the calculation made by the operating system on the load average.
+console.log(os.loadavg());
+
+//Returns the details of the network interfaces available on your system.
+console.log(os.networkInterfaces());
+
+//Return the platform that Node.js was compiled 
+console.log(os.platform());
+
+//Returns a string that identifies the operating system release number
+console.log(os.release());
+
+//Returns the path to the assigned temp folder.
+console.log(os.tmpdir());
+
+//Returns the number of bytes that represent the total memory available in the system
+console.log(os.totalmem());
+
+//Identifies the operating system
+console.log(os.type());
+
+//Returns the number of seconds the computer has been running since it was last rebooted.
+console.log(os.uptime());
+
+
+console.log(os.userInfo());
+
+
+
+============================================================================
+                       
+                           Buffer
+
+const buf = Buffer.from('HEY!');
+
+/* // console.log(buf.length)
+console.log(buf[0]);
+console.log(buf[1]);
+console.log(buf[2]);
+console.log(buf[3]);
+
+
+// console.log(String.fromCharCode(buf[0])+String.fromCharCode(buf[1])+String.fromCharCode(buf[2])+String.fromCharCode(buf[3]));
+
+console.log(buf.toString());
+ */
+
+//  const buf = Buffer.alloc(5);
+//  buf.write('hello');
+
+//  console.log(buf.toString());
+
+let copy = Buffer.alloc(4);
+
+buf.copy(copy,1,1,4)
+
+console.log(copy.toString());
+
+
+console.log(buf.slice(0).toString());
+
+let slice =buf.slice(0,2)
+
+console.log(slice.toString());
+
+buf[1]= 111;
+console.log(slice.toString());
+
+
+
+
+==============================================================================
+                           
+                            pipe()
+
+const http = require('http');
+const fs = require('fs');
+
+// const server = http.createServer((req,res)=>{
+//     fs.readFileSync(__dirname + '/sam.js', (err,data)=>{
+//         if (err) {
+//             console.log(err);
+//             return;
+//         }
+//         res.end(data)
+//     })
+// });
+
+
+
+
+const server = http.createServer((req,res)=>{
+    const stream = fs.createReadStream(__dirname+'/node')
+    stream.pipe(res)
+})
+
+
+server.listen(3000, ()=>{console.log('strat');})
+
+
+
+-==============================================================================
+
+                       Stream
+
+
+const Stream = require('stream');
+const readable = new Stream.Readable();
+
+readable._read =()=>{};
+
+readable.push("helo \n");
+readable.push("hello");
+readable.push("hello1");
+
+// // readable.on('readable',()=>{
+// //     console.log(readable.read().toString());
+    
+// // })
+
+const writable = Stream.Writable();
+
+writable._write =(chunk, encoding, next)=>{
+console.log(chunk.toString());
+next();
+}
+
+// writable.write("hello\n")
+readable.pipe(writable)
+
+
+ writable.end();
+
+
+============================================================================
+                       stream with express
+
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+
+const app = express();
+
+const resTime = require('response-time');
+
+const img = path.join(__dirname,'sam.jpeg');
+const node = path.join(__dirname,'node');
+const video = path.join(__dirname,'sam.pdf');
+
+
+
+app.use(resTime());
+
+app.get('/non-stream',(req,res)=>{
+    var file = fs.readFile(img,(err,data)=>{
+        res.end(data);
+    });
+    
+})
+app.get('/stream',(req,res)=>{
+    var stream = fs.createReadStream(img);
+    stream.pipe(res); 
+})
+
+app.get('/non-stream-file',(req,res)=>{
+    var file = fs.readFile(node,(err,data)=>{
+        res.end(data);
+    });
+    
+})
+app.get('/stream-file',(req,res)=>{
+    var stream = fs.createReadStream(node);
+    stream.pipe(res); 
+})
+
+
+
+app.get('/non-stream-video',(req,res)=>{
+    var file = fs.readFile(video,(err,data)=>{
+        res.end(data);
+    });
+    
+})
+
+app.get('/stream-video',(req,res)=>{
+    var stream = fs.createReadStream(video);
+    stream.pipe(res); 
+})
+
+
+
+app.listen(3000,()=>{console.log("started");
+})
+==============================================================================
+                         cluster
+
+                         
+const cluster = require('cluster');
+const http =  require('http');
+const cpun = require('os').cpus().length;
+const express = require('express');
+
+let stats ={};
+
+if(cluster.isMaster){
+    console.log(`fork ${cpun} worker is master`);
+    for(let i=0 ; i< cpun ; i++){
+        cluster.fork();
+    }
+    cluster.on('online',(worker)=>{
+        console.log(`worker is running on ${worker.pid}`);        
+    })
+    cluster.on('exit',(worker, code, signal)=>{
+        console.log(`worker with ${worker.pid}`);
+        
+    })
+    
+}
+else if(cluster.isWorker){
+    let port=3000;
+    stats[cluster.worker.process.pid]=0
+    console.log(`worker ${cluster.worker.process.pid} is now at 3000`);
+    
+    let app =express();
+
+    app.get("*",(req,res)=>{
+        stats[cluster.worker.process.pid]+=1;
+    
+      console.log( ` cluster ${cluster.worker.process.pid} responded \n`)
+      res.status(200).send( ` cluster ${cluster.worker.process.pid} responded \n`)
+    })
+    app.listen(port);
+}
+process.on('SIGINT',()=>{
+    console.log(stats);
+    console.log(`Execut "$ killall node" to terminate`);
+    process.exit(0)
+    
+    
+})
+
+
+===============================================================================
+
+
+const express = require('express');
+
+const app = express();
+
+
+app.use((req,res,next)=>{
+    return next();
+})
+
+app.get('/hello',(req,res,next)=>{
+    return res.send("<h1> Hello stranger </h1>")
+})
+app.get('/hello/:name',(req,res,next)=>{
+    // return res.send(`<h1> Hello ${req.param.name} </h1>`)
+    const {name} = req.params;
+        
+    if(name.toLowerCase()== 'abcd'){
+        return next(new Error("<h1> CANNOT PRINT THIS NAME</h1>"))
+    }
+    return res.send(`<h1> Hello ${name.toUpperCase()} </h1>`)
+})
+
+app.use((err, req, res, next)=>{
+    res.status(err.status || 500);
+    return res.send(err.message)
+});
+
+app.listen(3000)
