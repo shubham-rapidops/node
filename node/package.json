@@ -10,7 +10,7 @@
     "delay": "2500"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "express": "^4.17.1",
     "fs-extra": "^8.1.0",
     "response-time": "^2.3.2"
